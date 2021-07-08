@@ -24,4 +24,5 @@ public class UserController {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("user " + userId + " does not exists"));
     }
+
 }
