@@ -11,6 +11,10 @@ public enum ApplicationUserRole {
             USER_DELETE,
             USER_READ,
             USER_WRITE)),
+    EVENT_ADMIN(Sets.newHashSet(EVENT_DELETE,
+            EVENT_READ,
+            EVENT_WRITE,
+            USER_READ)),
     MOD(Sets.newHashSet(
             EVENT_READ,
             EVENT_WRITE,

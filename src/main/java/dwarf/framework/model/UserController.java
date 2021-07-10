@@ -17,6 +17,7 @@ public class UserController {
             new User(2, "Moderator"),
             new User(3, "User")
     );
+
     @GetMapping(path = "{userId}")
     public User getUser(@PathVariable("userId") Integer userId) {
         return USERS.stream()
