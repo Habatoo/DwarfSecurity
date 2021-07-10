@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import static dwarf.framework.security.ApplicationUserRole.*;
+
 @Configuration
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -38,12 +40,18 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     @Bean
     protected UserDetailsService userDetailsService() {
+        UserDetails admin = User.builder()
+                .username("Admin")
+                .password(passwordEncoder.encode("password"))
+                .roles(ADMIN.name()) // ROLE_ADMIN
+                .build();
+
         UserDetails user = User.builder()
                 .username("User")
                 .password(passwordEncoder.encode("password"))
-                .roles("USER") // ROLE_USER
+                .roles(USER.name()) // ROLE_USER
                 .build();
-        return new InMemoryUserDetailsManager(user);
+        return new InMemoryUserDetailsManager(admin, user);
     }
 
 }
