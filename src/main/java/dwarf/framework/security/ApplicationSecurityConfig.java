@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import java.util.concurrent.TimeUnit;
+
 import static dwarf.framework.security.ApplicationUserRole.*;
 
 @Configuration
@@ -41,7 +43,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/login").permitAll()
-                .defaultSuccessUrl("/events", true);
+                .defaultSuccessUrl("/events", true)
+                .and()
+                .rememberMe() // default 2 weeks
+                      .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+                      .key("securityKey");
     }
 
     @Override
