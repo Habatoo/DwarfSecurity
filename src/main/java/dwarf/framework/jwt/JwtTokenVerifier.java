@@ -42,22 +42,25 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
         if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
+            return;
         }
 
         String  token = authorizationHeader.replace(jwtConfig.getTokenPrefix(), "");
         try {
 
-            Jws<Claims> claimsJws = Jwts.parser()
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(secretKey)
-                    .parseClaimsJws(token);
+                    .build().parseClaimsJws(token);
+
+//            Jws<Claims> claimsJws = Jwts.parser()
+//                    .setSigningKey(secretKey)
+//                    .parseClaimsJws(token);
 
             Claims body = claimsJws.getBody();
 
             String username = body.getSubject();
 
             var authorities = (List<Map<String, String>>) body.get("authorities");
-
-            SecurityContextHolder.getContext().setAuthentication(null);
 
             Set<SimpleGrantedAuthority> simpleGrantedAuthority = authorities.stream()
                     .map(m -> new SimpleGrantedAuthority(m.get("authority")))
@@ -68,10 +71,14 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     null,
                     simpleGrantedAuthority
             );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
         } catch (JwtException e) {
             throw new IllegalStateException(String.format("Token %s cannot be truest", token));
         }
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
+
     }
 }
