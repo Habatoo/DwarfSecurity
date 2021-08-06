@@ -1,26 +1,32 @@
 package dwarf.framework.model;
 
+import dwarf.framework.repo.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Контроллер работы с пользователями.
+ * @version 0.001
+ * @author habatoo
+ */
 @RestController
 @RequestMapping("management/api/v1/users")
 public class UserManagementController {
+    private final UserRepository userRepository;
 
-    private static final List<User> USERS = Arrays.asList(
-            new User(1, "Admin"),
-            new User(2, "Moderator"),
-            new User(3, "User")
-    );
+    @Autowired
+    public UserManagementController(UserRepository userRepository
+    ) {
+        this.userRepository = userRepository;
+    }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'EVENT_ADMIN')")
-    // hasRole("ROLE_") hasAnyRole("ROLE_") hasAuthority("permission") hasAnyAuthority("permission")
     public List<User> getAllUsers() {
-        return USERS;
+        return userRepository.findAll();
     }
 
     @PostMapping
