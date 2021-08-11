@@ -20,11 +20,28 @@ public class User {
     private static final long serialVersionUID = -1399500801576919731L;
 
     @Id
-    @Column(name="USER_ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @Column(
+            name="USER_ID",
+            updatable = false
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
     private Integer userId;
 
-    @Column(name="USER_NAME", length = 100, nullable = false)
+    @Column(
+            name="USER_NAME",
+            length = 100,
+            nullable = false,
+            columnDefinition = "TEXT",
+            unique = true
+    )
     private String username;
 
     /**
